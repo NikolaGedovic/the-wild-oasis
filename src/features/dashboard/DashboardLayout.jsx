@@ -31,7 +31,7 @@ function DashboardLayout() {
         bookings={bookings}
         confiremStays={confirmedStays}
         numDays={numDays}
-        cabinCount={cabins.length}
+        cabinCount={(cabins || []).length}
       />
       <div>statistics</div>
       <div>Todays activity</div>

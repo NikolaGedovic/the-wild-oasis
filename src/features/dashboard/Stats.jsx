@@ -9,17 +9,17 @@ import { formatCurrency } from "../../utils/helpers";
 
 function Stats({ bookings, confiremStays, numDays, cabinCount }) {
   // 1.
-  const numBookings = bookings.length;
+  const numBookings = bookings?.length;
 
   // 2.
-  const sales = bookings.reduce((acc, cur) => acc + cur.totalPrice, 0);
+  const sales = bookings?.reduce((acc, cur) => acc + cur.totalPrice, 0);
 
   // 3.
-  const checkins = confiremStays.length;
+  const checkins = confiremStays?.length;
 
   // 4.
   const occupation =
-    confiremStays.reduce((acc, cur) => acc + cur.numNights, 0) /
+    confiremStays?.reduce((acc, cur) => acc + cur.numNights, 0) /
     (numDays * cabinCount);
 
   return (
