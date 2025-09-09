@@ -50,14 +50,11 @@ function TodayActivity() {
 
       {!isLoading ? (
         activities?.length > 0 ? (
-          <>
-            {console.log(activities)}
-            <TodayList>
-              {activities.map((activity) => (
-                <TodayItem activity={activity} key={activity.id} />
-              ))}
-            </TodayList>
-          </>
+          <TodayList>
+            {activities.map((activity) => (
+              <TodayItem activity={activity} key={activity.id} />
+            ))}
+          </TodayList>
         ) : (
           <NoActivity>No activity today...</NoActivity>
         )
