@@ -1,6 +1,5 @@
 import supabase, { supabaseUrl } from "./supabase";
 
-// ----------------- SIGNUP -----------------
 export async function signup({ fullName, email, password }) {
   const { data, error } = await supabase.auth.signUp({
     email,
@@ -12,58 +11,46 @@ export async function signup({ fullName, email, password }) {
       },
     },
   });
-
   if (error) throw new Error(error.message);
+
   return data;
 }
 
-// ----------------- LOGIN -----------------
 export async function login({ email, password }) {
-  const { data, error } = await supabase.auth.signInWithPassword({
+  let { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
-
   if (error) throw new Error(error.message);
+
   return data;
 }
 
-// ----------------- GET CURRENT USER -----------------
 export async function getCurrentUser() {
-  const {
-    data: { session },
-    error: sessionError,
-  } = await supabase.auth.getSession();
-  if (sessionError) throw new Error(sessionError.message);
+  const { data: session } = await supabase.auth.getSession();
+  if (!session.session) return null;
 
-  // No session = no logged-in user
-  if (!session) return null;
+  const { data, error } = await supabase.auth.getUser();
+  // console.log(data);
 
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser();
   if (error) throw new Error(error.message);
 
-  return user ?? null; // may be null if logged out
+  return data?.user;
 }
 
-// ----------------- LOGOUT -----------------
 export async function logout() {
   const { error } = await supabase.auth.signOut();
   if (error) throw new Error(error.message);
 }
 
-// ----------------- UPDATE CURRENT USER -----------------
 export async function updateCurrentUser({ password, fullName, avatar }) {
   // 1. Update password OR fullName
   let updateData;
   if (password) updateData = { password };
   if (fullName) updateData = { data: { fullName } };
-
   const { data, error } = await supabase.auth.updateUser(updateData);
-  if (error) throw new Error(error.message);
 
+  if (error) throw new Error(error.message);
   if (!avatar) return data;
 
   // 2. Upload the avatar image
@@ -81,8 +68,6 @@ export async function updateCurrentUser({ password, fullName, avatar }) {
       avatar: `${supabaseUrl}/storage/v1/object/public/avatars/${fileName}`,
     },
   });
-
   if (error2) throw new Error(error2.message);
-
   return updatedUser;
 }
